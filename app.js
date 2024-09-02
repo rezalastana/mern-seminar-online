@@ -20,17 +20,19 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+
+// app.use("/users", usersRouter); => localhost:9000/
+// app.get("/", (req, res) => {
+//     res.status(200).json({
+//         message: "Welcome to API semina",
+//     });
+// });
+// router
+app.use(v1, categoriesRouter);
+
 // use middleware error
+// pastikan use middleware dibawah router, agar router dijalankan terlebih dahulu
 app.use(notFoundMiddleware);
 app.use(handleErrorMiddleware);
-
-// app.use("/users", usersRouter);
-app.get("/", (req, res) => {
-    res.status(200).json({
-        message: "Welcome to API semina",
-    });
-});
-// router categories
-app.use(v1, categoriesRouter);
 
 module.exports = app;

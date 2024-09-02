@@ -1,15 +1,19 @@
-const { StatusCode } = require("http-status-codes");
+const { StatusCodes } = require("http-status-codes");
 
-// function
+// method error handler
 const errorHandlerMiddleware = (err, req, res, next) => {
+    console.log("err");
+    console.log(err.message);
+
     let customError = {
         // set default error, jika nantinta error tidak tau darimana set error ini sebagai default
-        statusCode: err.statusCode || StatusCode.INTERNAL_SERVER_ERROR,
-        msg: err.message || "Something went wrong, please try again",
+        statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
+        msg: err.message || "Something went wrong try again later",
     };
 
     //error validasi mongoose, misal ada required field, maxlength, minlength dari mongoose
     if (err.name === "ValidationError") {
+        // bisa dilihat dengan console.log(err.errors) akan ditampilkan obj makanya digunakan Object.values dan map lalu join
         customError.msg = Object.values(err.errors)
             .map((item) => item.message)
             .join(", ");
@@ -28,9 +32,7 @@ const errorHandlerMiddleware = (err, req, res, next) => {
         customError.statusCode = 404;
     }
 
-    return res
-        .status(customError.statusCode)
-        .json({ message: customError.msg });
+    return res.status(customError.statusCode).json({ msg: customError.msg });
 };
 
 // export

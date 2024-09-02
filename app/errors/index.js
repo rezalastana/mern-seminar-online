@@ -1,10 +1,10 @@
 // panggil semua error handler
 const CustomAPIError = require("./custom-api-error");
-const BadRequest = require("./bad-request");
+const BadRequestError = require("./bad-request");
 const NotFound = require("./not-found");
 
 module.exports = {
     CustomAPIError,
-    BadRequest,
+    BadRequestError,
     NotFound,
 };

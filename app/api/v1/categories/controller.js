@@ -1,5 +1,10 @@
 // import Category from './model';
 const Category = require("./model");
+// use service from mongoose folder categories.js file
+const {
+    getAllCategories,
+    createCategories,
+} = require("../../../services/mongoose/categories");
 
 // get all
 const index = async (req, res, next) => {
@@ -7,7 +12,7 @@ const index = async (req, res, next) => {
         // gunakan fitur .find() bawaan dari mongoose untuk mengambil semua data
         // bisa gunakan fitur .select() untuk memilih field yang ingin ditampilkan
         // const result = await Category.find().select("_id name");
-        const result = await Category.find();
+        const result = await getAllCategories();
 
         res.status(200).json({
             data: result,
@@ -22,13 +27,10 @@ const index = async (req, res, next) => {
 // penggunaan next untuk handle error
 const create = async (req, res, next) => {
     try {
-        // ambil data dari request body
-        const { name } = req.body;
-
-        const result = await Category.create({ name });
+        const result = await createCategories(req);
 
         //mengembalikan response
-        res.status(200).json({
+        res.status(201).json({
             data: result,
             message: "Success create category",
         });
