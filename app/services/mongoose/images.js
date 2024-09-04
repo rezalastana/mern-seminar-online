@@ -1,5 +1,7 @@
 // model
 const Images = require("../../api/v1/images/model");
+// error
+const { NotFoundError } = require("../../errors");
 
 // cara lain ketika membuat imageUrl
 const generateImgUrl = async (req) => {
@@ -18,7 +20,20 @@ const createImages = async (req) => {
     return result;
 };
 
+// checking image
+// checking image ini digunakan pada Talents untuk mengecek apakah image yang diinputkan ada atau tidak
+const checkingImage = async (id) => {
+    const result = await Images.findOne({ _id: id });
+    console.log(result);
+
+    // jika tidak ada image
+    if (!result) throw new NotFoundError(`Tidak ada gambar dengan id : ${id}`);
+
+    return result;
+};
+
 module.exports = {
     generateImgUrl,
     createImages,
+    checkingImage,
 };

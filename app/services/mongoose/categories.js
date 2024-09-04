@@ -74,13 +74,13 @@ const deleteCategories = async (req) => {
     const { id } = req.params;
 
     // check
-    const result = await Categories.findOne({ _id: id });
+    const result = await Categories.findOneAndDelete({ _id: id });
 
     // jika data tidak ditemukan, tampilkan error not found
     if (!result) throw new NotFoundError(`Tidak ada kategori dengan id ${id}`);
 
     // jika data ditemukan, hapus data
-    await result.deleteOne();
+    // await result.deleteOne();
 
     return result;
 };
