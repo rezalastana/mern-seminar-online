@@ -1,5 +1,4 @@
 // Desc: Mongoose service for categories
-
 const Categories = require("../../api/v1/categories/model");
 const { BadRequestError, NotFoundError } = require("../../errors");
 

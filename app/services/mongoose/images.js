@@ -3,6 +3,12 @@ const Images = require("../../api/v1/images/model");
 // error
 const { NotFoundError } = require("../../errors");
 
+// getAll Images
+const getAllImages = async () => {
+    const result = await Images.find();
+
+    return result;
+};
 // cara lain ketika membuat imageUrl
 const generateImgUrl = async (req) => {
     const result = `uploads/${req.file.filename}`;
@@ -33,6 +39,7 @@ const checkingImage = async (id) => {
 };
 
 module.exports = {
+    getAllImages,
     generateImgUrl,
     createImages,
     checkingImage,

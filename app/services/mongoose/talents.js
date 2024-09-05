@@ -8,6 +8,7 @@ const { BadRequestError } = require("../../errors");
 const getAllTalents = async (req) => {
     // ambil data dari query berupa keyword
     const { keyword } = req.query;
+
     //  variable condition untuk meyimpan obj pencarian
     let condition = {};
 
@@ -122,8 +123,6 @@ const deleteTalents = async (req) => {
 };
 
 const checkingTalents = async (id) => {
-    const { id } = req.params;
-
     const result = await Talents.findOne({ _id: id });
 
     if (!result)

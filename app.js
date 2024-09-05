@@ -5,9 +5,10 @@ const logger = require("morgan");
 
 const app = express();
 
-// import router categories
+// import router
 const categoriesRouter = require("./app/api/v1/categories/router");
 const imagesRouter = require("./app/api/v1/images/router");
+const talentsRouter = require("./app/api/v1/talents/router");
 
 //variable v1
 const v1 = "/api/v1/cms";
@@ -31,6 +32,7 @@ app.use(express.static(path.join(__dirname, "public")));
 // router
 app.use(v1, categoriesRouter);
 app.use(v1, imagesRouter);
+app.use(v1, talentsRouter);
 
 // use middleware error
 // pastikan use middleware dibawah router, agar router dijalankan terlebih dahulu
