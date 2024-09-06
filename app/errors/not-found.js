@@ -8,5 +8,4 @@ class NotFound extends CustomAPIError {
         this.statusCode = StatusCodes.NOT_FOUND;
     }
 }
-
 module.exports = NotFound;

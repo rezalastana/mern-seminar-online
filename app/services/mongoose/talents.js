@@ -3,19 +3,23 @@ const Talents = require("../../api/v1/talents/model");
 // image checking
 const { checkingImage } = require("./images");
 // error
-const { BadRequestError } = require("../../errors");
+const { BadRequestError, NotFoundError } = require("../../errors");
 
 const getAllTalents = async (req) => {
     // ambil data dari query berupa keyword
     const { keyword } = req.query;
 
-    //  variable condition untuk meyimpan obj pencarian
+    // variable condition untuk meyimpan obj pencarian, default kosong
     let condition = {};
 
     //kondisi jika keyword dimasukkan dan disimpan di condition, gunakan regex untuk mencari data dengan option i diubah menjadi huruf kecil
+    // jadi misal kita keyword "Andi" maka akan menampilkan data yang mengandung "andi" baik huruf besar maupun kecil dalam pencarian condition
     if (keyword) {
         condition = { ...condition, name: { $regex: keyword, $options: "i" } };
     }
+
+    // check console log condition jika keyword diisi -> menggunakan postman
+    console.log(condition); //check pada terminal
 
     // result dengan condition yang sudah diisi
     // gunakan populet untuk mengambil data dari image dengan mengambil id dan name saja (tidak perlu semua data)
@@ -57,17 +61,17 @@ const createTalents = async (req) => {
 const getOneTalents = async (req) => {
     const { id } = req.params;
 
-    // cari talents dengan id, dengan menampilkan imagenya juga
-    const result = await Talents.findOne(id)
+    const result = await Talents.findOne({
+        _id: id,
+    })
         .populate({
             path: "image",
             select: "_id name",
         })
         .select("_id name role image");
 
-    // jika tidak ada data dengan id yang dicari
     if (!result)
-        throw new BadRequestError(`Tidak ada pembicara dengan id : ${id}`);
+        throw new NotFoundError(`Tidak ada pembicara dengan id :  ${id}`);
 
     return result;
 };
@@ -80,8 +84,10 @@ const updateTalents = async (req) => {
     await checkingImage(image);
 
     //cari talents dengan field name dan id selain dari yang dikirim dari params (pengecekan duplikasi)
-    const check = await Talents.findOn;
-    e({ name, _id: { $ne: id } });
+    const check = await Talents.findOne({
+        name,
+        _id: { $ne: id },
+    });
 
     // apabilan di chek true, maka tampilkan error duplikasi
     if (check) throw new BadRequestError(`Pembicara ${name} already exists`);
