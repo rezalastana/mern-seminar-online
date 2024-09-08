@@ -7,7 +7,6 @@ const { checkingImage } = require("./images");
 const { checkingTalents } = require("./talents");
 //error
 const { NotFoundError, BadRequestError } = require("../../errors");
-const { path } = require("express/lib/application");
 
 const getAllEvents = async (req) => {
     const { keyword, category, talents } = req.query;
@@ -71,7 +70,7 @@ const createEvents = async (req) => {
     const check = await Events.findOne({ title });
 
     // apabila nama sudah ada maka akan muncul error
-    if (check) throw new BadRequestError(`Event ${title} sudah ada`);
+    if (check) throw new BadRequestError(`Event ${title} sudah terdaftar`);
 
     //jika tidak ada duplicat, maka create events
     const result = await Events.create({
@@ -91,7 +90,108 @@ const createEvents = async (req) => {
     return result;
 };
 
+const getOneEvents = async (req) => {
+    const { id } = req.params;
+
+    const result = await Events.findOne({ _id: id })
+        .populate({
+            path: "image",
+            select: "_id name",
+        })
+        .populate({
+            path: "category",
+            select: "_id name",
+        })
+        .populate({
+            path: "talents",
+            select: "_id name role image",
+            populate: {
+                path: "image",
+                select: "_id name",
+            },
+        })
+        .select(
+            "_id title date about tagline venueName keyPoint statusEvent tickets image category talents"
+        );
+
+    if (!result)
+        throw new NotFoundError(`Event dengan id : ${id} tidak ditemukan`);
+
+    return result;
+};
+
+const updateEvents = async (req) => {
+    const { id } = req.params;
+    const {
+        title,
+        date,
+        about,
+        tagline,
+        venueName,
+        keyPoint,
+        statusEvent,
+        tickets,
+        image,
+        category,
+        talent,
+    } = req.body;
+
+    //cari image, category, dan talents dengan field id
+    await checkingImage(image);
+    await checkingCategories(category);
+    await checkingTalents(talent);
+
+    //cari events dengan field id diatas, agar tidak terjadi duplikasi
+    const check = await Events.findOne({
+        title,
+        _id: { $ne: id },
+    });
+
+    if (check) throw new BadRequestError(`Event ${title} sudah terdaftar`);
+
+    //jika tidak ada duplikasi, maka update events
+    const result = await Events.findOneAndUpdate(
+        { _id: id },
+        {
+            title,
+            date,
+            about,
+            tagline,
+            venueName,
+            keyPoint,
+            statusEvent,
+            tickets,
+            image,
+            category,
+            talents: talent,
+        },
+        {
+            new: true,
+            runValidators: true,
+        }
+    );
+
+    // jika tidak ada data dengan id yang dicari
+    if (!result) throw new BadRequestError(`Tidak ada event dengan id : ${id}`);
+
+    return result;
+};
+
+const deleteEvents = async (req) => {
+    const { id } = req.params;
+
+    //hapus data dengan id yang dicari
+    const result = await Events.findOneAndDelete({ _id: id });
+
+    if (!result) throw new BadRequestError(`Tidak ada event dengan id : ${id}`);
+
+    return result;
+};
+
 module.exports = {
     getAllEvents,
     createEvents,
+    getOneEvents,
+    updateEvents,
+    deleteEvents,
 };
