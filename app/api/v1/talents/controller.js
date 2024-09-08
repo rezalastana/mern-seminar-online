@@ -25,7 +25,7 @@ const create = async (req, res, next) => {
     try {
         const result = await createTalents(req);
 
-        res.status(StatusCodes.ACCEPTED).json({
+        res.status(StatusCodes.CREATED).json({
             data: result,
             message: "Success create talent",
         });
@@ -51,7 +51,7 @@ const update = async (req, res, next) => {
     try {
         const result = await updateTalents(req);
 
-        res.status(StatusCodes.ACCEPTED).json({
+        res.status(StatusCodes.OK).json({
             data: result,
             message: "Success update talent",
         });
