@@ -142,6 +142,12 @@ const updateEvents = async (req) => {
     await checkingCategories(category);
     await checkingTalents(talent);
 
+    const chekEvent = await Events.findOne({ _id: id });
+
+    // check jika event tidak ditemukan
+    if (!chekEvent)
+        throw new NotFoundError(`Event dengan id : ${id} tidak ditemukan`);
+
     //cari events dengan field id diatas, agar tidak terjadi duplikasi
     const check = await Events.findOne({
         title,
@@ -171,9 +177,6 @@ const updateEvents = async (req) => {
             runValidators: true,
         }
     );
-
-    // jika tidak ada data dengan id yang dicari
-    if (!result) throw new BadRequestError(`Tidak ada event dengan id : ${id}`);
 
     return result;
 };
