@@ -9,20 +9,19 @@ const { checkingTalents } = require("./talents");
 const { NotFoundError, BadRequestError } = require("../../errors");
 
 const getAllEvents = async (req) => {
-    const { keyword, category, talents } = req.query;
+    const { keyword, category, talent } = req.query;
 
     let condition = {};
 
     // condition for searching by keyword
     if (keyword) {
-        condition = { ...condition, name: { $regex: keyword, $options: "i" } };
+        condition = { ...condition, title: { $regex: keyword, $options: "i" } };
     }
     if (category) {
-        await checkingCategories(category);
-        condition = { ...condition, category };
+        condition = { ...condition, category: category };
     }
-    if (talents) {
-        condition = { ...condition, talents: { $in: talents } };
+    if (talent) {
+        condition = { ...condition, talent: talent };
     }
 
     const result = await Events.find(condition)
@@ -43,6 +42,8 @@ const getAllEvents = async (req) => {
                 select: "_id name",
             },
         });
+
+    // return result
     return result;
 };
 
@@ -103,7 +104,7 @@ const getOneEvents = async (req) => {
             select: "_id name",
         })
         .populate({
-            path: "talents",
+            path: "talent",
             select: "_id name role image",
             populate: {
                 path: "image",
@@ -111,7 +112,7 @@ const getOneEvents = async (req) => {
             },
         })
         .select(
-            "_id title date about tagline venueName keyPoint statusEvent tickets image category talents"
+            "_id title date about tagline venueName keyPoint statusEvent tickets image category talent"
         );
 
     if (!result)
@@ -163,7 +164,7 @@ const updateEvents = async (req) => {
             tickets,
             image,
             category,
-            talents: talent,
+            talent,
         },
         {
             new: true,
