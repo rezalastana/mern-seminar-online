@@ -35,7 +35,7 @@ const getAllEvents = async (req) => {
             select: "_id name",
         })
         .populate({
-            path: "talents",
+            path: "talent",
             select: "_id name role image",
             // karena membutuhkan image dari talents, maka perlu di populate lagi ke image
             populate: {
