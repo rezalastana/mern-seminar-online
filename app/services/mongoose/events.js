@@ -84,7 +84,7 @@ const createEvents = async (req) => {
         tickets,
         image,
         category,
-        talents: talent,
+        talent,
     });
 
     return result;

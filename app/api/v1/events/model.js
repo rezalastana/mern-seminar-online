@@ -54,7 +54,7 @@ const eventSchema = new mongoose.Schema(
             required: [true, "Nama tempat harus diisi"],
         },
         statusEvent: {
-            type: Boolean,
+            type: String,
             enum: ["Draft", "Published"],
             default: "Draft",
         },
@@ -71,16 +71,16 @@ const eventSchema = new mongoose.Schema(
         },
         category: {
             type: mongoose.Types.ObjectId,
-            ref: "Categories",
+            ref: "Category",
             required: true,
         },
         talent: {
             type: mongoose.Types.ObjectId,
-            ref: "Talents",
+            ref: "Talent",
             required: true,
         },
     },
     { timestamps: true }
 );
 
-module.exports = mongoose.model("Events", eventSchema);
+module.exports = mongoose.model("Event", eventSchema);
