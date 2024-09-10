@@ -5,7 +5,7 @@ const { BadRequestError } = require("../../errors");
 //create Organizer
 const createOrganizer = async (req) => {
     const { organizer } = req.body;
-    const { name, email, password, confirmPassword } = req.body;
+    const { name, email, role, password, confirmPassword } = req.body;
 
     //kondisi jika password dan confirm password tidak sama
     if (password !== confirmPassword)
@@ -24,8 +24,8 @@ const createOrganizer = async (req) => {
         email,
         password,
         role,
-        // simpan id dari organizer yang telah dibuat (cek model organizer bukan id, tapi organizer)
-        organizer: result.organizer,
+        // simpan id dari organizer yang telah dibuat
+        organizer: result._id,
     });
 
     // hapus password dari response, agar user baru tidak mendapatkan password dari sebelumnya
