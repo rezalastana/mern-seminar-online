@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
+// bycript berguna untuk hashing password
 const bcrypt = require("bcryptjs");
 
 let userSchema = new Schema(
@@ -35,8 +36,8 @@ let userSchema = new Schema(
     { timestamps: true }
 );
 
-//method untuk hashing password
-// .pre adalah hooks dari mongo, sebelum password disimpan ke database, maka password akan di hash terlebih dahulu
+// method untuk hashing password
+// .pre adalah hooks dari mongo, sebelum password disimpan ke database, maka password akan di hash terlebih dahulu abaru disimpan dalam database
 userSchema.pre("save", async function (next) {
     const User = this;
     // bagian ini akan untuk menghash password
