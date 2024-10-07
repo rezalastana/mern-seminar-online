@@ -3,8 +3,10 @@ const Categories = require("../../api/v1/categories/model");
 const { BadRequestError, NotFoundError } = require("../../errors");
 
 // get all categories
-const getAllCategories = async () => {
-    const result = await Categories.find();
+const getAllCategories = async (req) => {
+    // ambil nilai req.user.organizer untuk mendapatkan semua data yang dibuat oleh organizer
+    // karena hanya organizer yang dapat membuat kategori
+    const result = await Categories.find({ organizer: req.user.organizer });
 
     return result;
 };
@@ -19,7 +21,11 @@ const createCategories = async (req) => {
     if (check) throw new BadRequestError("Nama Kategori sudah ada / duplikat");
 
     // jika false / tidak ada nama yang sama, return to create
-    const result = await Categories.create({ name });
+    // masukkan organizer untuk mendapatkan semua data yang dibuat oleh organizer ketika create
+    const result = await Categories.create({
+        name,
+        organizer: req.user.organizer,
+    });
 
     return result;
 };
@@ -30,7 +36,10 @@ const getOneCategories = async (req) => {
     const { id } = req.params;
 
     // jalankan await, harus dijalankan karena kita menggunakan async
-    const result = await Categories.findOne({ _id: id });
+    const result = await Categories.findOne({
+        _id: id,
+        organizer: req.user.organizer,
+    });
 
     // check akan dilakukan jika await sudah dijalankan dan result tidak ada maka akan tampilkan error not found
     if (!result) throw new NotFoundError(`Tidak ada kategori dengan id ${id}`);
@@ -48,7 +57,7 @@ const updateCategories = async (req) => {
     // misal id 1 akan diubah namanya menjadi "Programming" namun data  categories "Programming" sudah ada, ini tidak boleh, dan dilanjutkan ke throw error
     const check = await Categories.findOne({
         name,
-        //
+        organizer: req.user.organizer,
         _id: { $ne: id },
     });
 
@@ -73,7 +82,10 @@ const deleteCategories = async (req) => {
     const { id } = req.params;
 
     // check
-    const result = await Categories.findOneAndDelete({ _id: id });
+    const result = await Categories.findOneAndDelete({
+        _id: id,
+        organizer: req.user.organizer,
+    });
 
     // jika data tidak ditemukan, tampilkan error not found
     if (!result) throw new NotFoundError(`Tidak ada kategori dengan id ${id}`);
@@ -86,7 +98,10 @@ const deleteCategories = async (req) => {
 
 // checking categories
 const checkingCategories = async (id) => {
-    const result = await Categories.findOne({ _id: id });
+    const result = await Categories.findOne({
+        _id: id,
+        organizer: req.user.organizer,
+    });
     // console.log(result);
     if (!result)
         throw new NotFoundError(`Tidak ada kategori dengan id : ${id}`);

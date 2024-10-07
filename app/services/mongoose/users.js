@@ -2,7 +2,7 @@ const Users = require("../../api/v1/users/model");
 const Organizers = require("../../api/v1/organizers/model");
 const { BadRequestError } = require("../../errors");
 
-// method create Organizer and Users
+// method create Organizer and Users, diletakkan di organizer/controller.js
 const createOrganizer = async (req) => {
     const { organizer } = req.body;
     const { name, email, role, password, confirmPassword } = req.body;
@@ -36,6 +36,28 @@ const createOrganizer = async (req) => {
     return users;
 };
 
+// method createUser
+const createUser = async (req, res) => {
+    const { name, email, password, confirmPassword, role } = req.body;
+
+    if (password !== confirmPassword) {
+        throw new BadRequestError(
+            "Password dan Konfirmasi Password tidak sama"
+        );
+    }
+
+    const result = await Users.create({
+        name,
+        email,
+        password,
+        role,
+        organizer: req.user.organizer,
+    });
+
+    return result;
+};
+
 module.exports = {
     createOrganizer,
+    createUser,
 };

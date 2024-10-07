@@ -3,14 +3,45 @@ const router = express.Router();
 // import controller
 const { index, create, find, update, destroy } = require("./controller");
 
-//endpoint
-router.get("/categories", index);
-router.get("/categories/:id", find);
-router.put("/categories/:id", update);
+// auth middleware
+const {
+    authenticateUser,
+    authorizeRoles,
+} = require("../../../middleware/auth");
+const app = require("../../../../app");
 
-router.post("/categories", create);
+// middleware, bisa seperti ini atau dimasukkan 1 1 dalam router
+// app.use(authenticateUser);
 
-router.delete("/categories/:id", destroy);
+//endpoint, atau bisa langsung dimasukkan dalam router
+//sehingga yang dapat mengakses kategori hanyalah user yang sudah login dengan roles organizer
+router.get("/categories", authenticateUser, authorizeRoles("organizer"), index);
+router.get(
+    "/categories/:id",
+    authenticateUser,
+    authorizeRoles("organizer"),
+    find
+);
+router.put(
+    "/categories/:id",
+    authenticateUser,
+    authorizeRoles("organizer"),
+    update
+);
+
+router.post(
+    "/categories",
+    authenticateUser,
+    authorizeRoles("organizer"),
+    create
+);
+
+router.delete(
+    "/categories/:id",
+    authenticateUser,
+    authorizeRoles("organizer"),
+    destroy
+);
 
 //agar bisa digunakan pada app.js, jangan lupa untuk export router
 module.exports = router;

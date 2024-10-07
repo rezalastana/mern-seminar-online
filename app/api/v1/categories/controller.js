@@ -15,10 +15,7 @@ const {
 // get all
 const index = async (req, res, next) => {
     try {
-        // gunakan fitur .find() bawaan dari mongoose untuk mengambil semua data
-        // bisa gunakan fitur .select() untuk memilih field yang ingin ditampilkan
-        // const result = await Category.find().select("_id name");
-        const result = await getAllCategories();
+        const result = await getAllCategories(req);
 
         res.status(StatusCodes.OK).json({
             data: result,
