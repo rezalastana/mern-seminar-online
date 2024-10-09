@@ -1,0 +1,4 @@
+1. buat database pada mongo compass
+2. buat sebuah collection dengan contoh -> "user"
+3. import data (file) pada collection dan pilih file .json-> "user"
+4. lalu add data arahkan apda mock berikut -> "users.json"
