@@ -5,13 +5,29 @@ const router = express.Router();
 //controller
 const { index, create, find, update, destroy } = require("./controller");
 
-//endpoint
-router.get("/talents", index);
-router.get("/talents/:id", find);
-router.put("/talents/:id", update);
-router.post("/talents", create);
+//middleware
+const {
+    authenticateUser,
+    authorizeRoles,
+} = require("../../../middleware/auth");
 
-router.delete("/talents/:id", destroy);
+//endpoint
+router.get("/talents", authenticateUser, authorizeRoles("organizer"), index);
+router.get("/talents/:id", authenticateUser, authorizeRoles("organizer"), find);
+router.put(
+    "/talents/:id",
+    authenticateUser,
+    authorizeRoles("organizer"),
+    update
+);
+router.post("/talents", authenticateUser, authorizeRoles("organizer"), create);
+
+router.delete(
+    "/talents/:id",
+    authenticateUser,
+    authorizeRoles("organizer"),
+    destroy
+);
 
 // export
 module.exports = router;

@@ -8,13 +8,12 @@ const {
     authenticateUser,
     authorizeRoles,
 } = require("../../../middleware/auth");
-const app = require("../../../../app");
 
 // middleware, bisa seperti ini atau dimasukkan 1 1 dalam router
 // app.use(authenticateUser);
 
-//endpoint, atau bisa langsung dimasukkan dalam router
-//sehingga yang dapat mengakses kategori hanyalah user yang sudah login dengan roles organizer
+// endpoint, atau bisa langsung dimasukkan dalam router
+// sehingga yang dapat melakukan CRUD pada category hanya user yang memiliki role organizer
 router.get("/categories", authenticateUser, authorizeRoles("organizer"), index);
 router.get(
     "/categories/:id",
