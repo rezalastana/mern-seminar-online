@@ -7,7 +7,7 @@ const signinCms = async (req, res, next) => {
 
         res.status(StatusCodes.CREATED).json({
             data: { token: result },
-            message: "Signin CMS",
+            message: "Success Login",
         });
     } catch (error) {
         next(error);

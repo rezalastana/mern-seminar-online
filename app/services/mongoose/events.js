@@ -11,7 +11,8 @@ const { NotFoundError, BadRequestError } = require("../../errors");
 const getAllEvents = async (req) => {
     const { keyword, category, talent } = req.query;
 
-    let condition = {};
+    // menampilkan data by user yang login (organizer)
+    let condition = { organizer: req.user.organizer };
 
     // condition for searching by keyword
     if (keyword) {
@@ -86,6 +87,7 @@ const createEvents = async (req) => {
         image,
         category,
         talent,
+        organizer: req.user.organizer,
     });
 
     return result;
@@ -94,7 +96,10 @@ const createEvents = async (req) => {
 const getOneEvents = async (req) => {
     const { id } = req.params;
 
-    const result = await Events.findOne({ _id: id })
+    const result = await Events.findOne({
+        _id: id,
+        organizer: req.user.organizer,
+    })
         .populate({
             path: "image",
             select: "_id name",
@@ -151,6 +156,7 @@ const updateEvents = async (req) => {
     //cari events dengan field id diatas, agar tidak terjadi duplikasi
     const check = await Events.findOne({
         title,
+        organizer: req.user.organizer,
         _id: { $ne: id },
     });
 
@@ -171,6 +177,7 @@ const updateEvents = async (req) => {
             image,
             category,
             talent,
+            organizer: req.user.organizer,
         },
         {
             new: true,
@@ -185,7 +192,10 @@ const deleteEvents = async (req) => {
     const { id } = req.params;
 
     //hapus data dengan id yang dicari
-    const result = await Events.findOneAndDelete({ _id: id });
+    const result = await Events.findOneAndDelete({
+        _id: id,
+        organizer: req.user.organizer,
+    });
 
     if (!result) throw new BadRequestError(`Tidak ada event dengan id : ${id}`);
 

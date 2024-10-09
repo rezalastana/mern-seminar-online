@@ -28,7 +28,7 @@ let userSchema = new Schema(
         },
         // relasi dengan organizer
         organizer: {
-            type: Schema.Types.ObjectId,
+            type: mongoose.Types.ObjectId,
             ref: "Organizer",
             required: true,
         },

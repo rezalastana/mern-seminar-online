@@ -10,7 +10,7 @@ const createCMSOrganizer = async (req, res, next) => {
 
         res.status(StatusCodes.CREATED).json({
             data: result,
-            message: "Organizer created ",
+            message: "Organizer created",
         });
     } catch (error) {
         next(error);

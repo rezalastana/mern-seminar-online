@@ -10,7 +10,7 @@ const getAllTalents = async (req) => {
     const { keyword } = req.query;
 
     // variable condition untuk meyimpan obj pencarian, default kosong
-    let condition = {};
+    let condition = { organizer: req.user.organizer };
 
     //kondisi jika keyword dimasukkan dan disimpan di condition, gunakan regex untuk mencari data dengan option i diubah menjadi huruf kecil
     // jadi misal kita keyword "Andi" maka akan menampilkan data yang mengandung "andi" baik huruf besar maupun kecil dalam pencarian condition
@@ -43,7 +43,10 @@ const createTalents = async (req) => {
     await checkingImage(image);
 
     // cari talents dengan field name, agar tidak ada nama yang sama
-    const check = await Talents.findOne({ name });
+    const check = await Talents.findOne({
+        name,
+        organizer: req.user.organizer,
+    });
 
     // apabila nama sudah ada maka akan muncul error
     if (check) throw new BadRequestError(`Pembicara ${name} already exists`);
@@ -53,6 +56,7 @@ const createTalents = async (req) => {
         name,
         role,
         image,
+        organizer: req.user.organizer,
     });
 
     return result;
@@ -63,6 +67,7 @@ const getOneTalents = async (req) => {
 
     const result = await Talents.findOne({
         _id: id,
+        organizer: req.user.organizer,
     })
         .populate({
             path: "image",
@@ -86,6 +91,7 @@ const updateTalents = async (req) => {
     //cari talents dengan field name dan id selain dari yang dikirim dari params (pengecekan duplikasi)
     const check = await Talents.findOne({
         name,
+        organizer: req.user.organizer,
         _id: { $ne: id },
     });
 
@@ -101,6 +107,7 @@ const updateTalents = async (req) => {
             name,
             role,
             image,
+            organizer: req.user.organizer,
         },
         {
             new: true,
@@ -119,7 +126,10 @@ const deleteTalents = async (req) => {
     const { id } = req.params;
 
     //hapus data dengan id yang dicari
-    const result = await Talents.findOneAndDelete({ _id: id });
+    const result = await Talents.findOneAndDelete({
+        _id: id,
+        organizer: req.user.organizer,
+    });
 
     //jika tidak ada
     if (!result)

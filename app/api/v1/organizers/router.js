@@ -4,11 +4,25 @@ const router = express.Router();
 //controller
 const { createCMSOrganizer, createCMSUser } = require("./controller");
 //middleware
-const { authenticateUser } = require("../../../middleware/auth");
+const {
+    authenticateUser,
+    authorizeRoles,
+} = require("../../../middleware/auth");
 
 //endpoint
-router.post("/organizers", createCMSOrganizer);
-router.post("/users", authenticateUser, createCMSUser);
+// yang bisa membuat organizers hanyalah owner
+router.post(
+    "/organizers",
+    authenticateUser,
+    authorizeRoles("owner"),
+    createCMSOrganizer
+);
+router.post(
+    "/users",
+    authenticateUser,
+    authorizeRoles("organizer"),
+    createCMSUser
+);
 
 // export
 module.exports = router;

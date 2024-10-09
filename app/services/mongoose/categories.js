@@ -16,7 +16,11 @@ const createCategories = async (req) => {
     const { name } = req.body;
 
     // checking categories pernah dibuat atau belum
-    const check = await Categories.findOne({ name });
+    // masukkan organizer, sehingga akan dicek apakah data yang dibuat oleh organizer berbeda sudah ada atau belum tidak bertabrakan
+    const check = await Categories.findOne({
+        name,
+        organizer: req.user.organizer,
+    });
     // apa bila check true / data categories sudah ada maka kita tampilkan error bad request dengan message kategori nama duplikat
     if (check) throw new BadRequestError("Nama Kategori sudah ada / duplikat");
 
